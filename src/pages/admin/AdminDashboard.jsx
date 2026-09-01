@@ -178,7 +178,7 @@ const AdminDashboard = () => {
             value={summary.birthdaysThisWeek}
            highlight={summary.birthdaysThisWeek > 0}
            linkTo="/admin/birthdays"
-/>
+           />
       </div>
     </div>
   );

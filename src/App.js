@@ -41,7 +41,10 @@ import AddStudent from './pages/admin/AddStudent';
 import LibrarySettings from './pages/admin/LibrarySettings';
 
 import AttendanceTable from './pages/admin/AttendanceTable';
-// remove: import TodayAttendance from './pages/admin/TodayAttendance';
+ 
+import Birthdays from './pages/admin/Birthdays';
+ 
+
 
 // with your other admin routes:
 
@@ -145,6 +148,7 @@ function App() {
                 <Route path="/book/payment" element={studentRoute(<BookingPayment />)} />
 
                 {/* Admin */}
+                <Route path="/admin/birthdays" element={adminRoute(<Birthdays />)} />
                 <Route path="/admin/attendance-today" element={adminRoute(<AttendanceTable />)} />
                 <Route path="/admin/gate-display" element={adminRoute(<GateQRDisplay />)} />
                 <Route path="/scan" element={studentRoute(<ScanAttendance />)} />

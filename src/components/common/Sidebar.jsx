@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { to: '/admin/analytics', label: 'Analytics', icon: '📈' },
   { to: '/admin/settings', label: 'Settings', icon: '⚙️' },
   { to: '/admin/gate-display', label: 'Gate QR Codes', icon: '🔑' },
+  { to: '/admin/birthdays', label: 'Birthdays', icon: '🎂' },
 ];
 
 const linkClasses = ({ isActive }) =>
