@@ -173,6 +173,12 @@ const AdminDashboard = () => {
           highlight={summary.expiringMemberships > 0}
           linkTo="/admin/bookings?tab=expiring"
         />
+        <StatCard
+        label="Birthdays This Week"
+            value={summary.birthdaysThisWeek}
+           highlight={summary.birthdaysThisWeek > 0}
+           linkTo="/admin/birthdays"
+/>
       </div>
     </div>
   );
