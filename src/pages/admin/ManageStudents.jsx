@@ -6,6 +6,7 @@ import * as studentService from "../../services/studentService";
 import { useTenant } from "../../context/TenantContext";
 import Loader from "../../components/common/Loader";
 import StudentCard from "../../components/cards/StudentCard";
+import EditBookingModal from "../../components/admin/EditBookingModal";
 
 const TABS = [
   { key: "active", label: "Active" },
@@ -27,6 +28,9 @@ const ManageStudents = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+
+  // Booking currently being edited
+  const [editingBooking, setEditingBooking] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -165,12 +169,13 @@ const ManageStudents = () => {
           {filtered.map((b) => {
             const s = b.studentId;
 
-            const seatLabel = `Seat ${
-              b.seatId?.seatNumber
-            } · ${
-              b.seatId?.hallId?.name ||
-              `Hall ${b.seatId?.hallId?.hallNumber}`
-            }`;
+            // Guard against bookings with no fixed seat
+            const seatLabel = b.seatId
+              ? `Seat ${b.seatId?.seatNumber} · ${
+                  b.seatId?.hallId?.name ||
+                  `Hall ${b.seatId?.hallId?.hallNumber}`
+                }`
+              : "No fixed seat";
 
             const shiftLabel =
               b.timeSlotId?.label ||
@@ -182,11 +187,8 @@ const ManageStudents = () => {
 
             // WhatsApp pre-filled message
             const greeting = `Hi ${firstName}, this is ${
-              library?.name || "Gyan Library"
-            }. Your library fee is due for this month. Please complete the payment within the next ___ hours to avoid any late fees. Call or text us at +91 84059 09314 if you have any questions or concerns.
-
-Thanks & Regards,
-GYAN LIBRARY TEAM`;
+              library?.name || "the library"
+            } calling about your membership.`;
 
             return (
               <div
@@ -199,13 +201,23 @@ GYAN LIBRARY TEAM`;
                   image={s?.photoUrl}
                   phone={s?.userId?.phone}
                   whatsappMessage={greeting}
+                  onEdit={() => setEditingBooking(b)}
                 />
 
                 {/* Remove button */}
                 <button
                   onClick={() => handleDelete(b)}
                   disabled={deletingId === b._id}
-                  className="absolute top-2 right-2 text-xs text-red-400 hover:text-red-600 bg-white/80 px-2 py-1 rounded disabled:opacity-50"
+                  className="
+                    absolute bottom-2 right-2
+                    text-xs
+                    text-red-400
+                    hover:text-red-600
+                    bg-white/80
+                    px-2 py-1
+                    rounded
+                    disabled:opacity-50
+                  "
                 >
                   {deletingId === b._id
                     ? "..."
@@ -216,9 +228,21 @@ GYAN LIBRARY TEAM`;
           })}
         </div>
       )}
+
+      {/* Edit Booking Modal */}
+      {editingBooking && (
+        <EditBookingModal
+          booking={editingBooking}
+          onClose={() => setEditingBooking(null)}
+          onSaved={() => {
+            setEditingBooking(null);
+            load();
+          }}
+        />
+      )}
     </div>
   );
 };
 
 export default ManageStudents;
-  
+ 

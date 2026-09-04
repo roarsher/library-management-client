@@ -12,3 +12,4 @@ export const getMyPaymentHistory = () => api.get('/payments/me');
 export const listAllPayments = (params) => api.get('/payments', { params });
 export const listPendingManualPayments = () => api.get('/payments/pending-manual');
 export const verifyManualPayment = (id, payload) => api.put(`/payments/${id}/verify-manual`, payload);
+export const listPaymentsDue = () => api.get('/payments/due');

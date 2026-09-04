@@ -162,11 +162,8 @@ const AdminDashboard = () => {
           highlight={summary.pendingLeaveRequests > 0}
           linkTo="/admin/leaves"
         />
-        <StatCard
-          label="Students on Leave"
-          value={summary.studentsOnLeave}
-          linkTo="/admin/bookings?tab=on_leave"
-        />
+         <StatCard label="Students on Leave" value={summary.studentsOnLeave} linkTo="/admin/on-leave" />
+ 
         <StatCard
           label="Expiring This Week"
           value={summary.expiringMemberships}
@@ -174,11 +171,17 @@ const AdminDashboard = () => {
           linkTo="/admin/bookings?tab=expiring"
         />
         <StatCard
-        label="Birthdays This Week"
-            value={summary.birthdaysThisWeek}
-           highlight={summary.birthdaysThisWeek > 0}
-           linkTo="/admin/birthdays"
-           />
+  label="Payment Due"
+  value={summary.paymentsDueCount}
+  highlight={summary.paymentsDueCount > 0}
+  linkTo="/admin/payment-due"
+/>
+<StatCard
+  label="Birthdays This Week"
+  value={summary.birthdaysThisWeek}
+  highlight={summary.birthdaysThisWeek > 0}
+  linkTo="/admin/birthdays"
+/>
       </div>
     </div>
   );

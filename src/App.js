@@ -17,6 +17,9 @@ import Footer from './components/common/Footer';
 import About from './pages/public/About';
 import Contact from './pages/public/Contact';
 
+import CurrentlyOnLeave from './pages/admin/CurrentlyOnLeave';
+import PaymentDue from './pages/admin/PaymentDue';
+
 import StudentDashboard from './pages/student/StudentDashboard';
 import AdmissionForm from './pages/student/AdmissionForm';
 import SeatSelection from './pages/student/SeatSelection';
@@ -163,6 +166,8 @@ function App() {
                 <Route path="/admin/analytics" element={adminRoute(<Analytics />)} />
                 <Route path="/admin/students/add" element={adminRoute(<AddStudent />)} />
                 <Route path="/admin/settings" element={adminRoute(<LibrarySettings />)} />
+                <Route path="/admin/on-leave" element={adminRoute(<CurrentlyOnLeave />)} />
+                <Route path="/admin/payment-due" element={adminRoute(<PaymentDue />)} />
 
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />

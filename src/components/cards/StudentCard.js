@@ -1,6 +1,6 @@
  
 import React from "react";
-import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
+import { FaPhoneAlt, FaWhatsapp, FaEdit } from "react-icons/fa";
 
 const toWhatsAppLink = (phone, prefillMessage) => {
   const digitsOnly = (phone || "").replace(/\D/g, "");
@@ -21,6 +21,7 @@ const StudentCard = ({
   image,
   phone,
   whatsappMessage,
+  onEdit,
 }) => {
   return (
     <div
@@ -43,6 +44,28 @@ const StudentCard = ({
       {/* Top accent bar */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand via-sky-400 to-emerald-400" />
 
+      {/* Edit button */}
+      {onEdit && (
+        <button
+          type="button"
+          onClick={onEdit}
+          title="Edit"
+          className="
+            absolute top-3 right-3
+            h-7 w-7
+            rounded-full
+            bg-gray-50 dark:bg-gray-700
+            text-gray-400
+            hover:text-brand
+            hover:bg-brand/10
+            flex items-center justify-center
+            transition-colors
+          "
+        >
+          <FaEdit size={12} />
+        </button>
+      )}
+
       {/* Avatar */}
       <div className="relative flex-shrink-0">
         <div className="w-[68px] h-[68px] rounded-full bg-gradient-to-br from-brand via-sky-400 to-emerald-400 p-[3px]">
@@ -50,10 +73,23 @@ const StudentCard = ({
             <img
               src={image}
               alt={name}
-              className="w-full h-full rounded-full object-cover border-2 border-white dark:border-gray-800"
+              className="
+                w-full h-full
+                rounded-full
+                object-cover
+                border-2 border-white dark:border-gray-800
+              "
             />
           ) : (
-            <div className="w-full h-full rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-brand text-xl font-bold">
+            <div
+              className="
+                w-full h-full
+                rounded-full
+                bg-white dark:bg-gray-800
+                flex items-center justify-center
+                text-brand text-xl font-bold
+              "
+            >
               {name?.[0] || "?"}
             </div>
           )}
@@ -80,7 +116,15 @@ const StudentCard = ({
               <a
                 href={`tel:${phone}`}
                 title="Call"
-                className="h-9 w-9 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-colors"
+                className="
+                  h-9 w-9
+                  rounded-full
+                  bg-blue-50 dark:bg-blue-500/10
+                  text-blue-500
+                  flex items-center justify-center
+                  hover:bg-blue-500 hover:text-white
+                  transition-colors
+                "
               >
                 <FaPhoneAlt size={14} />
               </a>
@@ -91,7 +135,15 @@ const StudentCard = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Message on WhatsApp"
-                className="h-9 w-9 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-colors"
+                className="
+                  h-9 w-9
+                  rounded-full
+                  bg-emerald-50 dark:bg-emerald-500/10
+                  text-emerald-500
+                  flex items-center justify-center
+                  hover:bg-emerald-500 hover:text-white
+                  transition-colors
+                "
               >
                 <FaWhatsapp size={16} />
               </a>
