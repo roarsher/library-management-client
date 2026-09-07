@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../context/TenantContext';
 import { useBooking } from '../../context/BookingContext';
 import * as bookingService from '../../services/bookingService';
+import * as couponService from '../../services/couponService';
 import { calculateBookingPrice } from '../../utils/pricingUtils';
 import BookingSteps from '../../components/booking/BookingSteps';
 import ManualPaymentUpload from '../../components/payment/ManualPaymentUpload';
@@ -10,27 +11,79 @@ import ManualPaymentUpload from '../../components/payment/ManualPaymentUpload';
 const BookingPayment = () => {
   const navigate = useNavigate();
   const { library } = useTenant();
-  const { seat, hall, timeSlot, durationMonths, startDate, selectedAddOns, reset } = useBooking();
+  const {
+    seat,
+    hall,
+    timeSlot,
+    durationMonths,
+    startDate,
+    selectedAddOns,
+    reset,
+  } = useBooking();
 
   const [booking, setBooking] = useState(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
 
+  // Coupon states
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponError, setCouponError] = useState('');
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
+
   useEffect(() => {
     if (!seat || !timeSlot) {
       navigate('/book/seat');
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const seatPriceTotal = calculateBookingPrice(timeSlot?.monthlyPrice || 0, durationMonths, library);
-  const addOnsMonthlyTotal = selectedAddOns.reduce((sum, a) => sum + a.pricePerMonth, 0);
+  // Calculate seat price including coupon discount
+  const seatPriceTotal = calculateBookingPrice(
+    timeSlot?.monthlyPrice || 0,
+    durationMonths,
+    library,
+    couponDiscount
+  );
+
+  const addOnsMonthlyTotal = selectedAddOns.reduce(
+    (sum, a) => sum + a.pricePerMonth,
+    0
+  );
+
   const addOnsTotal = addOnsMonthlyTotal * durationMonths;
+
   const grandTotal = seatPriceTotal + addOnsTotal;
 
+  // Apply coupon
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+
+    setCheckingCoupon(true);
+    setCouponError('');
+
+    try {
+      const { data } = await couponService.validateCoupon(
+        couponCode.trim()
+      );
+
+      setCouponDiscount(data.discountPercent);
+    } catch (err) {
+      setCouponDiscount(0);
+      setCouponError(
+        err.response?.data?.message || 'Invalid coupon'
+      );
+    } finally {
+      setCheckingCoupon(false);
+    }
+  };
+
+  // Create booking
   const handleCreateBooking = async () => {
     setError('');
     setCreating(true);
+
     try {
       const { data } = await bookingService.createBooking({
         seatId: seat._id,
@@ -38,10 +91,19 @@ const BookingPayment = () => {
         durationMonths,
         startDate: new Date(startDate).toISOString(),
         addOnIds: selectedAddOns.map((a) => a._id),
+
+        // Send coupon only when successfully applied
+        couponCode: couponDiscount
+          ? couponCode.trim()
+          : undefined,
       });
+
       setBooking(data.booking);
     } catch (err) {
-      setError(err.response?.data?.message || 'Could not create booking');
+      setError(
+        err.response?.data?.message ||
+          'Could not create booking'
+      );
     } finally {
       setCreating(false);
     }
@@ -50,48 +112,135 @@ const BookingPayment = () => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <BookingSteps current="payment" />
-      <h1 className="text-xl font-semibold text-gray-800 mb-6 text-center">Order Summary</h1>
+
+      <h1 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+        Order Summary
+      </h1>
 
       <div className="card mb-6">
         <div className="flex justify-between text-sm py-1.5">
-          <span className="text-gray-600">Seat {seat?.seatNumber} · {hall?.name}</span>
-          <span className="text-gray-800">{timeSlot?.label}</span>
+          <span className="text-gray-600">
+            Seat {seat?.seatNumber} · {hall?.name}
+          </span>
+
+          <span className="text-gray-800">
+            {timeSlot?.label}
+          </span>
         </div>
+
         {selectedAddOns.map((a) => (
-          <div key={a._id} className="flex justify-between text-sm py-1.5">
-            <span className="text-gray-600">{a.name}</span>
-            <span className="text-gray-800">₹{a.pricePerMonth}/mo</span>
+          <div
+            key={a._id}
+            className="flex justify-between text-sm py-1.5"
+          >
+            <span className="text-gray-600">
+              {a.name}
+            </span>
+
+            <span className="text-gray-800">
+              ₹{a.pricePerMonth}/mo
+            </span>
           </div>
         ))}
+
         <div className="flex justify-between text-sm py-1.5 border-t border-gray-100 mt-2 pt-2">
-          <span className="text-gray-600">Duration</span>
-          <span className="text-gray-800">{durationMonths} month(s)</span>
+          <span className="text-gray-600">
+            Duration
+          </span>
+
+          <span className="text-gray-800">
+            {durationMonths} month(s)
+          </span>
         </div>
+
+        {/* Coupon */}
+        <div className="border-t border-gray-100 mt-3 pt-3">
+          <div className="flex gap-2 mb-4">
+            <input
+              value={couponCode}
+              onChange={(e) => {
+                setCouponCode(e.target.value);
+                setCouponDiscount(0);
+                setCouponError('');
+              }}
+              placeholder="Have a coupon code?"
+              className="input-field flex-1 text-sm"
+              disabled={checkingCoupon || !!booking}
+            />
+
+            <button
+              onClick={handleApplyCoupon}
+              disabled={
+                checkingCoupon ||
+                !couponCode.trim() ||
+                !!booking
+              }
+              className="btn-secondary text-sm px-4"
+            >
+              {checkingCoupon ? 'Checking...' : 'Apply'}
+            </button>
+          </div>
+
+          {couponDiscount > 0 && (
+            <p className="text-xs text-green-600 mb-2">
+              {couponDiscount}% discount applied
+            </p>
+          )}
+
+          {couponError && (
+            <p className="text-xs text-red-500 mb-2">
+              {couponError}
+            </p>
+          )}
+        </div>
+
+        {/* Total */}
         <div className="flex justify-between font-semibold text-gray-800 border-t border-gray-100 mt-2 pt-2">
           <span>Total</span>
+
           <span>₹{grandTotal}</span>
         </div>
       </div>
 
-      {error && <p className="text-sm text-red-500 text-center mb-4">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-500 text-center mb-4">
+          {error}
+        </p>
+      )}
 
       {!booking ? (
-        <button onClick={handleCreateBooking} disabled={creating} className="btn-primary w-full">
-          {creating ? 'Requesting seat...' : 'Confirm Seat Request'}
+        <button
+          onClick={handleCreateBooking}
+          disabled={creating}
+          className="btn-primary w-full"
+        >
+          {creating
+            ? 'Requesting seat...'
+            : 'Confirm Seat Request'}
         </button>
       ) : (
         <>
           <p className="text-sm text-gray-500 text-center mb-4">
-            Seat requested — an admin will confirm shortly. Scan the QR below to pay, or pay later from your dashboard.
+            Seat requested — an admin will confirm shortly.
+            Scan the QR below to pay, or pay later from your
+            dashboard.
           </p>
+
           <ManualPaymentUpload
             bookingId={booking._id}
             amount={grandTotal}
             qrImageUrl={library?.qrPaymentImageUrl}
-            onSubmitted={() => { reset(); navigate('/'); }}
+            onSubmitted={() => {
+              reset();
+              navigate('/');
+            }}
           />
+
           <button
-            onClick={() => { reset(); navigate('/'); }}
+            onClick={() => {
+              reset();
+              navigate('/');
+            }}
             className="text-xs text-gray-400 w-full text-center mt-3"
           >
             Pay later from my dashboard

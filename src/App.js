@@ -20,6 +20,9 @@ import Contact from './pages/public/Contact';
 import CurrentlyOnLeave from './pages/admin/CurrentlyOnLeave';
 import PaymentDue from './pages/admin/PaymentDue';
 
+ 
+import ManageCoupons from './pages/admin/ManageCoupons';
+
 import StudentDashboard from './pages/student/StudentDashboard';
 import AdmissionForm from './pages/student/AdmissionForm';
 import SeatSelection from './pages/student/SeatSelection';
@@ -168,6 +171,7 @@ function App() {
                 <Route path="/admin/settings" element={adminRoute(<LibrarySettings />)} />
                 <Route path="/admin/on-leave" element={adminRoute(<CurrentlyOnLeave />)} />
                 <Route path="/admin/payment-due" element={adminRoute(<PaymentDue />)} />
+                <Route path="/admin/coupons" element={adminRoute(<ManageCoupons />)} />
 
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />

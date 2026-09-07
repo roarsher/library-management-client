@@ -13,3 +13,5 @@ export const listAllPayments = (params) => api.get('/payments', { params });
 export const listPendingManualPayments = () => api.get('/payments/pending-manual');
 export const verifyManualPayment = (id, payload) => api.put(`/payments/${id}/verify-manual`, payload);
 export const listPaymentsDue = () => api.get('/payments/due');
+export const recordPartialPayment = (payload) => api.post('/payments/record-partial', payload);
+export const clearDue = (id, amountCleared) => api.put(`/payments/${id}/clear-due`, { amountCleared });
