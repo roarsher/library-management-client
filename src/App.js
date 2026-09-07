@@ -19,6 +19,8 @@ import Contact from './pages/public/Contact';
 
 import CurrentlyOnLeave from './pages/admin/CurrentlyOnLeave';
 import PaymentDue from './pages/admin/PaymentDue';
+ 
+import ManageAddOns from './pages/admin/ManageAddOns';
 
  
 import ManageCoupons from './pages/admin/ManageCoupons';
@@ -172,6 +174,7 @@ function App() {
                 <Route path="/admin/on-leave" element={adminRoute(<CurrentlyOnLeave />)} />
                 <Route path="/admin/payment-due" element={adminRoute(<PaymentDue />)} />
                 <Route path="/admin/coupons" element={adminRoute(<ManageCoupons />)} />
+                <Route path="/admin/add-ons" element={adminRoute(<ManageAddOns />)} />
 
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />

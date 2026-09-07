@@ -11,6 +11,7 @@ import ManualPaymentUpload from '../../components/payment/ManualPaymentUpload';
 const BookingPayment = () => {
   const navigate = useNavigate();
   const { library } = useTenant();
+
   const {
     seat,
     hall,
@@ -18,6 +19,7 @@ const BookingPayment = () => {
     durationMonths,
     startDate,
     selectedAddOns,
+    addOnQuantities,
     reset,
   } = useBooking();
 
@@ -39,7 +41,16 @@ const BookingPayment = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Calculate seat price including coupon discount
+  // --------------------------------------------------
+  // PRICE CALCULATIONS
+  // --------------------------------------------------
+
+  // Seat price before coupon discount
+  const seatPriceBeforeDiscount = timeSlot?.monthlyPrice
+    ? timeSlot.monthlyPrice * durationMonths
+    : 0;
+
+  // Seat price after coupon discount
   const seatPriceTotal = calculateBookingPrice(
     timeSlot?.monthlyPrice || 0,
     durationMonths,
@@ -47,16 +58,30 @@ const BookingPayment = () => {
     couponDiscount
   );
 
+  // Actual discount amount
+  const seatDiscountAmount =
+    seatPriceBeforeDiscount - seatPriceTotal;
+
+  // Add-ons monthly total with quantities
   const addOnsMonthlyTotal = selectedAddOns.reduce(
-    (sum, a) => sum + a.pricePerMonth,
+    (sum, a) =>
+      sum +
+      a.pricePerMonth * (addOnQuantities?.[a._id] || 1),
     0
   );
 
-  const addOnsTotal = addOnsMonthlyTotal * durationMonths;
+  // Add-ons total for selected duration
+  const addOnsTotal =
+    addOnsMonthlyTotal * durationMonths;
 
-  const grandTotal = seatPriceTotal + addOnsTotal;
+  // Final booking total
+  const grandTotal =
+    seatPriceTotal + addOnsTotal;
 
-  // Apply coupon
+  // --------------------------------------------------
+  // APPLY COUPON
+  // --------------------------------------------------
+
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
 
@@ -64,39 +89,54 @@ const BookingPayment = () => {
     setCouponError('');
 
     try {
-      const { data } = await couponService.validateCoupon(
-        couponCode.trim()
-      );
+      const { data } =
+        await couponService.validateCoupon(
+          couponCode.trim()
+        );
 
       setCouponDiscount(data.discountPercent);
     } catch (err) {
       setCouponDiscount(0);
       setCouponError(
-        err.response?.data?.message || 'Invalid coupon'
+        err.response?.data?.message ||
+          'Invalid coupon'
       );
     } finally {
       setCheckingCoupon(false);
     }
   };
 
-  // Create booking
+  // --------------------------------------------------
+  // CREATE BOOKING
+  // --------------------------------------------------
+
   const handleCreateBooking = async () => {
     setError('');
     setCreating(true);
 
     try {
-      const { data } = await bookingService.createBooking({
-        seatId: seat._id,
-        timeSlotId: timeSlot._id,
-        durationMonths,
-        startDate: new Date(startDate).toISOString(),
-        addOnIds: selectedAddOns.map((a) => a._id),
+      const { data } =
+        await bookingService.createBooking({
+          seatId: seat._id,
+          timeSlotId: timeSlot._id,
+          durationMonths,
+          startDate: new Date(
+            startDate
+          ).toISOString(),
 
-        // Send coupon only when successfully applied
-        couponCode: couponDiscount
-          ? couponCode.trim()
-          : undefined,
-      });
+          // Selected add-ons
+          addOnIds: selectedAddOns.map(
+            (a) => a._id
+          ),
+
+          // Add-on quantities
+          addOnQuantities,
+
+          // Send coupon only when successfully applied
+          couponCode: couponDiscount
+            ? couponCode.trim()
+            : undefined,
+        });
 
       setBooking(data.booking);
     } catch (err) {
@@ -117,7 +157,11 @@ const BookingPayment = () => {
         Order Summary
       </h1>
 
+      {/* --------------------------------------------
+          ORDER SUMMARY
+      --------------------------------------------- */}
       <div className="card mb-6">
+        {/* Seat */}
         <div className="flex justify-between text-sm py-1.5">
           <span className="text-gray-600">
             Seat {seat?.seatNumber} · {hall?.name}
@@ -128,21 +172,31 @@ const BookingPayment = () => {
           </span>
         </div>
 
-        {selectedAddOns.map((a) => (
-          <div
-            key={a._id}
-            className="flex justify-between text-sm py-1.5"
-          >
-            <span className="text-gray-600">
-              {a.name}
-            </span>
+        {/* Add-ons */}
+        {selectedAddOns.map((a) => {
+          const qty =
+            addOnQuantities?.[a._id] || 1;
 
-            <span className="text-gray-800">
-              ₹{a.pricePerMonth}/mo
-            </span>
-          </div>
-        ))}
+          return (
+            <div
+              key={a._id}
+              className="flex justify-between text-sm py-1.5"
+            >
+              <span className="text-gray-600">
+                {a.name}
+                {a.unit === 'hour'
+                  ? ` × ${qty}hr`
+                  : ''}
+              </span>
 
+              <span className="text-gray-800">
+                ₹{a.pricePerMonth * qty}/mo
+              </span>
+            </div>
+          );
+        })}
+
+        {/* Duration */}
         <div className="flex justify-between text-sm py-1.5 border-t border-gray-100 mt-2 pt-2">
           <span className="text-gray-600">
             Duration
@@ -165,7 +219,9 @@ const BookingPayment = () => {
               }}
               placeholder="Have a coupon code?"
               className="input-field flex-1 text-sm"
-              disabled={checkingCoupon || !!booking}
+              disabled={
+                checkingCoupon || !!booking
+              }
             />
 
             <button
@@ -177,7 +233,9 @@ const BookingPayment = () => {
               }
               className="btn-secondary text-sm px-4"
             >
-              {checkingCoupon ? 'Checking...' : 'Apply'}
+              {checkingCoupon
+                ? 'Checking...'
+                : 'Apply'}
             </button>
           </div>
 
@@ -194,19 +252,39 @@ const BookingPayment = () => {
           )}
         </div>
 
+        {/* Coupon Discount */}
+        {seatDiscountAmount > 0 && (
+          <div className="flex justify-between text-sm py-1.5 text-green-600">
+            <span>
+              Coupon discount ({couponDiscount}%)
+            </span>
+
+            <span>
+              −₹{seatDiscountAmount}
+            </span>
+          </div>
+        )}
+
         {/* Total */}
         <div className="flex justify-between font-semibold text-gray-800 border-t border-gray-100 mt-2 pt-2">
           <span>Total</span>
 
-          <span>₹{grandTotal}</span>
+          <span>
+            ₹{grandTotal}
+          </span>
         </div>
       </div>
 
+      {/* Error */}
       {error && (
         <p className="text-sm text-red-500 text-center mb-4">
           {error}
         </p>
       )}
+
+      {/* --------------------------------------------
+          CREATE BOOKING / PAYMENT
+      --------------------------------------------- */}
 
       {!booking ? (
         <button
@@ -221,9 +299,9 @@ const BookingPayment = () => {
       ) : (
         <>
           <p className="text-sm text-gray-500 text-center mb-4">
-            Seat requested — an admin will confirm shortly.
-            Scan the QR below to pay, or pay later from your
-            dashboard.
+            Seat requested — an admin will confirm
+            shortly. Scan the QR below to pay, or pay
+            later from your dashboard.
           </p>
 
           <ManualPaymentUpload

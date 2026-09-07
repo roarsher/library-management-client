@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as addOnService from '../../services/addOnService';
 import { useBooking } from '../../context/BookingContext';
@@ -7,7 +7,7 @@ import Loader from '../../components/common/Loader';
 
 const AddOns = () => {
   const navigate = useNavigate();
-  const { seat, timeSlot, selectedAddOns, toggleAddOn } = useBooking();
+  const { seat, timeSlot, selectedAddOns, toggleAddOn, addOnQuantities, setAddOnQuantity } = useBooking();
 
   const [addOns, setAddOns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,60 +29,77 @@ const AddOns = () => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <BookingSteps current="addons" />
-      <h1 className="text-xl font-semibold text-gray-800 mb-1 text-center">
-        🔥 Add More Study Hours?
-      </h1>
+      <h1 className="text-xl font-semibold text-gray-800 mb-1 text-center">🔥 Add More Study Hours?</h1>
       <p className="text-sm text-gray-500 text-center mb-6">
         Optional extras — tap to add, tap again to remove.
       </p>
 
       {addOns.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center mb-8">
-          No add-ons available right now.
-        </p>
+        <p className="text-sm text-gray-400 text-center mb-8">No add-ons available right now.</p>
       ) : (
         <div className="space-y-2 mb-8">
           {addOns.map((addOn) => {
             const isSelected = selectedAddOns.some((a) => a._id === addOn._id);
+            const isHourly = addOn.unit === 'hour';
+            const quantity = addOnQuantities[addOn._id] || 1;
+
             return (
-              <button
+              <div
                 key={addOn._id}
-                onClick={() => toggleAddOn(addOn)}
-                className={`w-full text-left card flex items-center justify-between border-2 ${
-                  isSelected ? 'border-brand' : 'border-transparent'
-                }`}
+                className={`card border-2 ${isSelected ? 'border-brand' : 'border-transparent'}`}
               >
-                <div>
-                  <p className="font-medium text-gray-800">+ {addOn.name}</p>
-                  {addOn.description && (
-                    <p className="text-xs text-gray-400 mt-0.5">{addOn.description}</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-gray-700">
-                    ₹{addOn.pricePerMonth}/mo
-                  </span>
-                  <span
-                    className={`h-5 w-5 rounded-full border flex items-center justify-center text-xs ${
-                      isSelected ? 'bg-brand border-brand text-white' : 'border-gray-300'
-                    }`}
-                  >
-                    {isSelected ? '✓' : '+'}
-                  </span>
-                </div>
-              </button>
+                <button
+                  onClick={() => toggleAddOn(addOn)}
+                  className="w-full text-left flex items-center justify-between"
+                >
+                  <div>
+                    <p className="font-medium text-gray-800">+ {addOn.name}</p>
+                    {addOn.description && <p className="text-xs text-gray-400 mt-0.5">{addOn.description}</p>}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-gray-700">
+                      ₹{addOn.pricePerMonth}{isHourly ? '/hr/mo' : '/mo'}
+                    </span>
+                    <span
+                      className={`h-5 w-5 rounded-full border flex items-center justify-center text-xs ${
+                        isSelected ? 'bg-brand border-brand text-white' : 'border-gray-300'
+                      }`}
+                    >
+                      {isSelected ? '✓' : '+'}
+                    </span>
+                  </div>
+                </button>
+
+                {isSelected && isHourly && (
+                  <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
+                    <span className="text-xs text-gray-500">Hours per day:</span>
+                    <button
+                      onClick={() => setAddOnQuantity(addOn._id, quantity - 1)}
+                      className="h-7 w-7 rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50"
+                    >
+                      −
+                    </button>
+                    <span className="text-sm font-medium w-6 text-center">{quantity}</span>
+                    <button
+                      onClick={() => setAddOnQuantity(addOn._id, quantity + 1)}
+                      className="h-7 w-7 rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50"
+                    >
+                      +
+                    </button>
+                    <span className="text-xs text-gray-400 ml-auto">
+                      = ₹{addOn.pricePerMonth * quantity}/mo
+                    </span>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
       )}
 
       <div className="flex justify-center gap-3">
-        <button onClick={() => navigate('/book/payment')} className="btn-secondary px-6">
-          Skip
-        </button>
-        <button onClick={() => navigate('/book/payment')} className="btn-primary px-8">
-          Continue
-        </button>
+        <button onClick={() => navigate('/book/payment')} className="btn-secondary px-6">Skip</button>
+        <button onClick={() => navigate('/book/payment')} className="btn-primary px-8">Continue</button>
       </div>
     </div>
   );
