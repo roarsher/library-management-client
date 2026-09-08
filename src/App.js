@@ -1,7 +1,7 @@
  // client/src/App.jsx
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { TenantProvider, useTenant } from './context/TenantContext';
+import { TenantProvider} from './context/TenantContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { BookingProvider } from './context/BookingContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
