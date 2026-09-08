@@ -58,22 +58,22 @@ import Birthdays from './pages/admin/Birthdays';
 
 // Waits for the tenant (library branding) to resolve before rendering
 // anything else — every screen depends on knowing which library this is.
-const TenantGate = ({ children }) => {
-  const { loading, error } = useTenant();
+// const TenantGate = ({ children }) => {
+//   const { loading, error } = useTenant();
 
-  if (loading) return <Loader label="Loading library..." />;
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center max-w-sm">
-          <p className="text-red-500 font-medium mb-2">Could not load this library</p>
-          <p className="text-sm text-gray-500">{error}</p>
-        </div>
-      </div>
-    );
-  }
-  return children;
-};
+//   if (loading) return <Loader label="Loading library..." />;
+//   if (error) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center px-4">
+//         <div className="text-center max-w-sm">
+//           <p className="text-red-500 font-medium mb-2">Could not load this library</p>
+//           <p className="text-sm text-gray-500">{error}</p>
+//         </div>
+//       </div>
+//     );
+//   }
+//   return children;
+// };
 
 const PublicLayout = ({ children }) => (
   <div className="min-h-screen bg-gray-50 flex flex-col pt-16">
@@ -129,7 +129,7 @@ const adminRoute = (element) => (
 function App() {
   return (
     <TenantProvider>
-      <TenantGate>
+       
         <AuthProvider>
           <BookingProvider>
             <BrowserRouter>
@@ -182,7 +182,7 @@ function App() {
             </BrowserRouter>
           </BookingProvider>
         </AuthProvider>
-      </TenantGate>
+      
     </TenantProvider>
   );
 }

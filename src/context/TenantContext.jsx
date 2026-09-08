@@ -1,4 +1,6 @@
-//  import React, { createContext, useContext, useEffect, useState } from 'react';
+ 
+
+// import React, { createContext, useContext, useEffect, useState } from 'react';
 // import api from '../services/api';
 
 // const TenantContext = createContext(null);
@@ -55,21 +57,31 @@
 //   );
 // };
 
-// export const useTenant = () => useContext(TenantContext);
-
+// export const useTenant = () => useContext(TenantContext); 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import api from '../services/api';
 
 const TenantContext = createContext(null);
 
-// Multi-tenancy removed — this app now always serves one fixed library.
-// If you ever need multi-tenant support again, this is the one function
-// to change back to subdomain/domain-based resolution.
 const LIBRARY_ID = '6a9571ff82ff329f15173be4';
 
+// Sensible defaults so the app renders instantly instead of waiting on
+// the network — real values overwrite these silently once the fetch
+// resolves, usually within a few hundred ms.
+const DEFAULT_LIBRARY = {
+  name: 'Library',
+  logoUrl: null,
+  themeColor: '#2563eb',
+  qrPaymentImageUrl: null,
+  address: '',
+  contactEmail: '',
+  contactPhone: '',
+  settings: { durationDiscounts: {} },
+};
+
 export const TenantProvider = ({ children }) => {
-  const [library, setLibrary] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [library, setLibrary] = useState(DEFAULT_LIBRARY);
+  const [loading] = useState(false); // never blocks — always false
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -99,12 +111,11 @@ export const TenantProvider = ({ children }) => {
       } catch (err) {
         console.error('Library load error:', err);
         setError(err.response?.data?.message || err.message || 'Could not load library');
-      } finally {
-        setLoading(false);
+        // library stays at DEFAULT_LIBRARY — app keeps working regardless
       }
     };
 
-    loadLibrary();
+    loadLibrary(); // fire-and-forget, never blocks render
   }, []);
 
   return (
