@@ -1,127 +1,6 @@
-//  import React from 'react';
-// import { motion } from 'framer-motion';
-// import { GraduationCap, QrCode, Timer, ListChecks, Wallet, Megaphone } from 'lucide-react';
-// import { useTenant } from '../context/TenantContext';
-
-// const FEATURES = [
-//   { icon: GraduationCap, title: 'Seat Booking', description: 'Choose your hall, shift, and seat — book online in a few taps.' },
-//   { icon: QrCode, title: 'QR Attendance', description: 'Scan the gate QR to check in and out, tracked automatically.' },
-//   { icon: Timer, title: 'Study Timer', description: 'Track focused study sessions that pick up right where you left off.' },
-//   { icon: ListChecks, title: 'To-Do List', description: 'Plan your day with tasks, subtasks, and due dates.' },
-//   { icon: Wallet, title: 'Fees & Payments', description: 'Pay online or via QR, and download receipts anytime.' },
-//   { icon: Megaphone, title: 'Notices & Updates', description: 'Stay in the loop with announcements from the library.' },
-// ];
-
-// // Cycles through the logo's blue / orange / red palette
-// const COLORS = [
-//   { grad: 'from-[#1B5FAE] to-[#29ABE2]', glow: 'hover:shadow-[0_10px_30px_-8px_rgba(41,171,226,0.5)]' },
-//   { grad: 'from-[#F7941D] to-[#FDB813]', glow: 'hover:shadow-[0_10px_30px_-8px_rgba(253,184,19,0.5)]' },
-//   { grad: 'from-[#ED1C24] to-[#F04E5A]', glow: 'hover:shadow-[0_10px_30px_-8px_rgba(237,28,36,0.5)]' },
-// ];
-
-// const Home = () => {
-//   const { library } = useTenant();
-
-//   return (
-//     <div className="bg-white overflow-hidden">
-//       {/* Hero */}
-//       <section className="relative px-6 py-20 sm:py-28 text-center overflow-hidden">
-//         {/* Base gradient */}
-//         <div className="absolute inset-0 bg-gradient-to-br from-[#0B4C8C] via-[#F7941D] to-[#ED1C24]" />
-
-//         {/* Rotating sunburst, echoing the logo */}
-//         <motion.div
-//           className="absolute left-1/2 top-1/2 w-[36rem] h-[36rem] -translate-x-1/2 -translate-y-1/2 opacity-25 pointer-events-none"
-//           style={{
-//             background:
-//               'repeating-conic-gradient(from 0deg, #FDB813 0deg 8deg, transparent 8deg 20deg)',
-//             borderRadius: '9999px',
-//           }}
-//           animate={{ rotate: 360 }}
-//           transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
-//         />
-
-//         {/* Floating blobs */}
-//         <motion.div
-//           className="absolute -top-20 -left-16 w-72 h-72 bg-[#29ABE2] rounded-full blur-3xl opacity-40"
-//           animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
-//           transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-//         />
-//         <motion.div
-//           className="absolute -bottom-24 -right-16 w-80 h-80 bg-[#FDB813] rounded-full blur-3xl opacity-40"
-//           animate={{ x: [0, -30, 0], y: [0, -25, 0] }}
-//           transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-//         />
-
-//         <div className="relative max-w-3xl mx-auto">
-//           <motion.h1
-//             initial={{ opacity: 0, y: 24 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.7 }}
-//             className="text-4xl sm:text-6xl font-extrabold text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)] mb-4"
-//           >
-//             {library?.name || 'Your Library'}
-//           </motion.h1>
-//           <motion.p
-//             initial={{ opacity: 0, y: 24 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.7, delay: 0.15 }}
-//             className="text-white/95 text-base sm:text-lg font-medium max-w-xl mx-auto"
-//           >
-//             A smart study-space platform to manage seats, attendance, study time, and fees — all in one place.
-//           </motion.p>
-//         </div>
-//       </section>
-
-//       {/* Feature grid */}
-//       <section className="px-6 py-16 max-w-5xl mx-auto">
-//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-//           {FEATURES.map(({ icon: Icon, title, description }, i) => {
-//             const color = COLORS[i % COLORS.length];
-//             return (
-//               <motion.div
-//                 key={title}
-//                 initial={{ opacity: 0, y: 24 }}
-//                 whileInView={{ opacity: 1, y: 0 }}
-//                 viewport={{ once: true }}
-//                 transition={{ duration: 0.5, delay: i * 0.08 }}
-//                 whileHover={{ y: -6 }}
-//                 className={`group rounded-2xl bg-white border border-gray-100 shadow-sm p-6 transition-all duration-300 ${color.glow}`}
-//               >
-//                 <div
-//                   className={`h-12 w-12 rounded-xl bg-gradient-to-br ${color.grad} flex items-center justify-center text-white mb-4 shadow-md group-hover:scale-110 transition-transform duration-300`}
-//                 >
-//                   <Icon size={22} />
-//                 </div>
-//                 <h3 className="text-gray-800 font-semibold text-lg mb-1">{title}</h3>
-//                 <p className="text-gray-500 text-sm">{description}</p>
-//               </motion.div>
-//             );
-//           })}
-//         </div>
-//       </section>
-
-//       {/* CTA strip */}
-//       <section className="relative px-6 py-14 text-center overflow-hidden">
-//         <div className="absolute inset-0 bg-gradient-to-r from-[#1B5FAE] via-[#F7941D] to-[#ED1C24]" />
-//         <motion.h2
-//           initial={{ opacity: 0, y: 16 }}
-//           whileInView={{ opacity: 1, y: 0 }}
-//           viewport={{ once: true }}
-//           transition={{ duration: 0.6 }}
-//           className="relative text-white text-2xl sm:text-3xl font-bold"
-//         >
-//           Ready to book your seat?
-//         </motion.h2>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-import React from 'react';
+ import React from 'react';
 import { motion } from 'framer-motion';
+
 import {
   Wifi,
   Camera,
@@ -130,7 +9,6 @@ import {
   Newspaper,
   BookOpen,
   Armchair,
- 
   Printer,
   Fingerprint,
   Droplets,
@@ -150,8 +28,7 @@ import {
 import { useTenant } from '../context/TenantContext';
 
 // ======================================================
-// IMPORT YOUR IMAGES FROM src/assets
-// Change filenames according to your actual asset names
+// IMAGES
 // ======================================================
 
 import wifiImg from '../assets/wifi.jpg';
@@ -163,94 +40,102 @@ import newspaperImg from '../assets/newspaper.jpg';
 import booksImg from '../assets/books.jpg';
 import magazineImg from '../assets/magazine.jpg';
 import cabinImg from '../assets/separate-cabin.jpg';
- 
 import printingImg from '../assets/printing.jpg';
 import biometricImg from '../assets/biometric.jpg';
 
 import waterImg from '../assets/ro-water.jpg';
- 
 import parkingImg from '../assets/parking.jpg';
- 
 import lunchRoomImg from '../assets/lunch-room.jpg';
 import teaCoffeeImg from '../assets/tea-coffee.jpg';
 import girlsAreaImg from '../assets/girls-area.jpg';
- 
-
-
 
 // ======================================================
-// DATA
+// SERVICES
 // ======================================================
 
 const SERVICES = [
   {
     icon: Wifi,
     title: 'Free Wi-Fi',
-    description: 'High-speed internet connectivity for study and learning.',
+    description:
+      'High-speed internet connectivity for study and learning.',
     image: wifiImg,
   },
   {
     icon: Camera,
     title: 'CCTV Surveillance',
-    description: '24×7 CCTV surveillance for a safe and secure environment.',
+    description:
+      '24×7 CCTV surveillance for a safe and secure environment.',
     image: cctvImg,
   },
   {
     icon: BookOpen,
     title: 'Peaceful Study Environment',
-    description: 'A clean, peaceful and distraction-free environment.',
+    description:
+      'A clean, peaceful and distraction-free environment.',
     image: studyEnvironmentImg,
   },
   {
     icon: Snowflake,
     title: 'Fully Air-Conditioned',
-    description: 'Comfortable temperature throughout your study hours.',
+    description:
+      'Comfortable temperature throughout your study hours.',
     image: acImg,
   },
   {
     icon: BatteryCharging,
     title: '24×7 Power Backup',
-    description: 'Uninterrupted study with reliable battery backup.',
+    description:
+      'Uninterrupted study with reliable battery backup.',
     image: batteryImg,
   },
   {
     icon: Newspaper,
     title: 'English & Hindi Newspapers',
-    description: 'Stay updated with daily English and Hindi newspapers.',
+    description:
+      'Stay updated with daily English and Hindi newspapers.',
     image: newspaperImg,
   },
   {
     icon: BookOpen,
     title: 'Wide Range of Books',
-    description: 'Useful books and study material for different learners.',
+    description:
+      'Useful books and study material for different learners.',
     image: booksImg,
   },
   {
     icon: Newspaper,
     title: 'Monthly Magazines',
-    description: 'Access to useful monthly magazines and publications.',
+    description:
+      'Access to useful monthly magazines and publications.',
     image: magazineImg,
   },
   {
     icon: Armchair,
     title: 'Separate Seating Cabins',
-    description: 'Comfortable individual seating spaces for focused study.',
+    description:
+      'Comfortable individual seating spaces for focused study.',
     image: cabinImg,
   },
-   
   {
     icon: Printer,
     title: 'Photocopy & Printing',
-    description: 'Printing and photocopy facilities available on-site.',
+    description:
+      'Printing and photocopy facilities available on-site.',
     image: printingImg,
   },
   {
     icon: Fingerprint,
     title: 'Biometric Attendance',
-    description: 'Secure and accurate attendance management system.',
+    description:
+      'Secure and accurate attendance management system.',
     image: biometricImg,
   },
 ];
+
+// ======================================================
+// FACILITIES
+// ======================================================
 
 const FACILITIES = [
   {
@@ -258,13 +143,11 @@ const FACILITIES = [
     title: 'Hot & Cold Pure RO Water',
     image: waterImg,
   },
-   
   {
     icon: Bike,
     title: 'Long Parking Area',
     image: parkingImg,
   },
-  
   {
     icon: Utensils,
     title: 'Separate Lunch Room',
@@ -280,9 +163,11 @@ const FACILITIES = [
     title: 'Separate Area for Girls',
     image: girlsAreaImg,
   },
-   
-   
 ];
+
+// ======================================================
+// SMART FEATURES
+// ======================================================
 
 const SMART_FEATURES = [
   {
@@ -317,6 +202,33 @@ const SMART_FEATURES = [
   },
 ];
 
+// ======================================================
+// CARD COLORS
+// ======================================================
+
+const CARD_COLORS = [
+  {
+    border: 'border-[#1B5FAE]/30',
+    hoverBorder: 'hover:border-[#1B5FAE]',
+    icon: 'from-[#1B5FAE] to-[#29ABE2]',
+    shadow:
+      'hover:shadow-[0_15px_35px_-10px_rgba(27,95,174,0.35)]',
+  },
+  {
+    border: 'border-[#F7941D]/30',
+    hoverBorder: 'hover:border-[#F7941D]',
+    icon: 'from-[#F7941D] to-[#FDB813]',
+    shadow:
+      'hover:shadow-[0_15px_35px_-10px_rgba(247,148,29,0.35)]',
+  },
+  {
+    border: 'border-[#ED1C24]/30',
+    hoverBorder: 'hover:border-[#ED1C24]',
+    icon: 'from-[#ED1C24] to-[#F04E5A]',
+    shadow:
+      'hover:shadow-[0_15px_35px_-10px_rgba(237,28,36,0.30)]',
+  },
+];
 
 // ======================================================
 // ANIMATION VARIANTS
@@ -346,12 +258,16 @@ const staggerContainer = {
   },
 };
 
-
 // ======================================================
 // SECTION TITLE
 // ======================================================
 
-const SectionTitle = ({ eyebrow, title, description, light = false }) => {
+const SectionTitle = ({
+  eyebrow,
+  title,
+  description,
+  light = false,
+}) => {
   return (
     <motion.div
       variants={fadeUp}
@@ -397,7 +313,6 @@ const SectionTitle = ({ eyebrow, title, description, light = false }) => {
   );
 };
 
-
 // ======================================================
 // HOME
 // ======================================================
@@ -405,142 +320,91 @@ const SectionTitle = ({ eyebrow, title, description, light = false }) => {
 const Home = () => {
   const { library } = useTenant();
 
-  const libraryName = library?.name || 'Gyan Library';
+  const libraryName = library?.name || 'Your Library';
 
   return (
     <div className="bg-white overflow-hidden">
 
       {/* ==================================================
-          HERO
+          ORIGINAL HERO SECTION
+          KEPT AS YOUR PREVIOUS DESIGN
       ================================================== */}
 
-      <section className="relative min-h-[620px] flex items-center overflow-hidden">
+      <section className="relative px-6 py-20 sm:py-28 text-center overflow-hidden">
 
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#063B70] via-[#0B67A3] to-[#1B5FAE]" />
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B4C8C] via-[#F7941D] to-[#ED1C24]" />
 
-        {/* Decorative circles */}
+        {/* Rotating sunburst */}
         <motion.div
-          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-[#29ABE2]/20 blur-3xl"
+          className="absolute left-1/2 top-1/2 w-[36rem] h-[36rem] -translate-x-1/2 -translate-y-1/2 opacity-25 pointer-events-none"
+          style={{
+            background:
+              'repeating-conic-gradient(from 0deg, #FDB813 0deg 8deg, transparent 8deg 20deg)',
+            borderRadius: '9999px',
+          }}
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 50,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
+
+        {/* Floating blob 1 */}
+        <motion.div
+          className="absolute -top-20 -left-16 w-72 h-72 bg-[#29ABE2] rounded-full blur-3xl opacity-40"
           animate={{
-            x: [0, -40, 0],
+            x: [0, 40, 0],
             y: [0, 30, 0],
           }}
           transition={{
-            duration: 10,
+            duration: 9,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
         />
 
+        {/* Floating blob 2 */}
         <motion.div
-          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#F7941D]/20 blur-3xl"
+          className="absolute -bottom-24 -right-16 w-80 h-80 bg-[#FDB813] rounded-full blur-3xl opacity-40"
           animate={{
-            x: [0, 40, 0],
-            y: [0, -30, 0],
+            x: [0, -30, 0],
+            y: [0, -25, 0],
           }}
           transition={{
-            duration: 12,
+            duration: 11,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
         />
 
-        {/* Floating dots */}
-        <motion.div
-          className="absolute top-24 left-[10%] w-4 h-4 rounded-full bg-orange-400"
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.5, 1, 0.5],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-          }}
-        />
+        <div className="relative max-w-3xl mx-auto">
 
-        <motion.div
-          className="absolute top-[40%] right-[12%] w-3 h-3 rounded-full bg-white"
-          animate={{
-            y: [0, 25, 0],
-            opacity: [0.3, 1, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-          }}
-        />
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-4xl sm:text-6xl font-extrabold text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)] mb-4"
+          >
+            {libraryName}
+          </motion.h1>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-24 w-full">
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              delay: 0.15,
+            }}
+            className="text-white/95 text-base sm:text-lg font-medium max-w-xl mx-auto"
+          >
+            A smart study-space platform to manage seats,
+            attendance, study time, and fees — all in one place.
+          </motion.p>
 
-          <div className="max-w-4xl mx-auto text-center">
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7 }}
-              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm text-white px-5 py-2 rounded-full mb-7"
-            >
-              <BookOpen size={18} />
-              <span className="text-sm font-semibold">
-                A Better Place to Study & Grow
-              </span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 35 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight"
-            >
-              Welcome to
-              <span className="block text-[#FDB813]">
-                {libraryName}
-              </span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.25 }}
-              className="mt-7 text-white/85 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed"
-            >
-              A peaceful, comfortable and technology-enabled study space
-              designed to help you stay focused and achieve your goals.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4 }}
-              className="flex flex-col sm:flex-row justify-center gap-4 mt-9"
-            >
-              <a
-                href="/booking"
-                className="group inline-flex items-center justify-center gap-2 bg-[#F7941D] hover:bg-[#e9830c] text-white font-bold px-7 py-4 rounded-xl shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                Book Your Seat
-                <ArrowRight
-                  size={19}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </a>
-
-              <a
-                href="/about"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold px-7 py-4 rounded-xl backdrop-blur-sm transition-all duration-300"
-              >
-                Explore Gyan Library
-              </a>
-            </motion.div>
-
-          </div>
         </div>
-
-        {/* Bottom wave */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-white [clip-path:ellipse(65%_100%_at_50%_100%)]" />
       </section>
-
 
       {/* ==================================================
           SMART LIBRARY FEATURES
@@ -560,12 +424,18 @@ const Home = () => {
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{
+              once: true,
+              amount: 0.15,
+            }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
 
             {SMART_FEATURES.map((item, index) => {
+
               const Icon = item.icon;
+              const color =
+                CARD_COLORS[index % CARD_COLORS.length];
 
               return (
                 <motion.div
@@ -573,11 +443,43 @@ const Home = () => {
                   variants={fadeUp}
                   whileHover={{
                     y: -8,
-                    transition: { duration: 0.25 },
+                    transition: {
+                      duration: 0.25,
+                    },
                   }}
-                  className="group p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-xl transition-shadow duration-300"
+                  className={`
+                    group
+                    p-6
+                    rounded-2xl
+                    bg-white
+                    border-2
+                    ${color.border}
+                    ${color.hoverBorder}
+                    ${color.shadow}
+                    shadow-sm
+                    transition-all
+                    duration-300
+                  `}
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1B5FAE] to-[#29ABE2] text-white flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+
+                  <div
+                    className={`
+                      w-14 h-14
+                      rounded-2xl
+                      bg-gradient-to-br
+                      ${color.icon}
+                      text-white
+                      flex
+                      items-center
+                      justify-center
+                      mb-5
+                      shadow-md
+                      group-hover:scale-110
+                      group-hover:rotate-3
+                      transition-all
+                      duration-300
+                    `}
+                  >
                     <Icon size={25} />
                   </div>
 
@@ -588,14 +490,15 @@ const Home = () => {
                   <p className="text-gray-500 leading-relaxed">
                     {item.description}
                   </p>
+
                 </motion.div>
               );
             })}
 
           </motion.div>
+
         </div>
       </section>
-
 
       {/* ==================================================
           SERVICES
@@ -615,38 +518,89 @@ const Home = () => {
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            viewport={{
+              once: true,
+              amount: 0.1,
+            }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
           >
 
-            {SERVICES.map((service) => {
+            {SERVICES.map((service, index) => {
+
               const Icon = service.icon;
+              const color =
+                CARD_COLORS[index % CARD_COLORS.length];
 
               return (
                 <motion.div
                   key={service.title}
                   variants={fadeUp}
-                  whileHover={{ y: -8 }}
-                  className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl border border-gray-100 transition-all duration-300"
+                  whileHover={{
+                    y: -8,
+                    transition: {
+                      duration: 0.25,
+                    },
+                  }}
+                  className={`
+                    group
+                    bg-white
+                    rounded-2xl
+                    overflow-hidden
+                    border-2
+                    ${color.border}
+                    ${color.hoverBorder}
+                    ${color.shadow}
+                    shadow-sm
+                    transition-all
+                    duration-300
+                  `}
                 >
 
                   {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
 
                     <img
                       src={service.image}
                       alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="
+                        w-full
+                        h-full
+                        object-cover
+                        group-hover:scale-110
+                        transition-transform
+                        duration-700
+                      "
                     />
 
+                    {/* Image overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                    <div className="absolute bottom-4 left-4 w-11 h-11 rounded-xl bg-white text-[#1B5FAE] flex items-center justify-center shadow-lg">
+                    {/* Icon */}
+                    <div
+                      className="
+                        absolute
+                        bottom-4
+                        left-4
+                        w-11
+                        h-11
+                        rounded-xl
+                        bg-white
+                        text-[#1B5FAE]
+                        flex
+                        items-center
+                        justify-center
+                        shadow-lg
+                        group-hover:scale-110
+                        transition-transform
+                        duration-300
+                      "
+                    >
                       <Icon size={21} />
                     </div>
 
                   </div>
 
+                  {/* Content */}
                   <div className="p-5">
 
                     <h3 className="text-lg font-bold text-gray-800 mb-2">
@@ -664,9 +618,9 @@ const Home = () => {
             })}
 
           </motion.div>
+
         </div>
       </section>
-
 
       {/* ==================================================
           FACILITIES
@@ -686,12 +640,18 @@ const Home = () => {
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            viewport={{
+              once: true,
+              amount: 0.1,
+            }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
           >
 
-            {FACILITIES.map((facility) => {
+            {FACILITIES.map((facility, index) => {
+
               const Icon = facility.icon;
+              const color =
+                CARD_COLORS[index % CARD_COLORS.length];
 
               return (
                 <motion.div
@@ -700,25 +660,66 @@ const Home = () => {
                   whileHover={{
                     y: -7,
                     scale: 1.01,
+                    transition: {
+                      duration: 0.25,
+                    },
                   }}
-                  className="group rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300"
+                  className={`
+                    group
+                    rounded-2xl
+                    overflow-hidden
+                    bg-white
+                    border-2
+                    ${color.border}
+                    ${color.hoverBorder}
+                    ${color.shadow}
+                    shadow-sm
+                    transition-all
+                    duration-300
+                  `}
                 >
 
-                  <div className="relative h-48 overflow-hidden">
+                  {/* Image */}
+                  <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
 
                     <img
                       src={facility.image}
                       alt={facility.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="
+                        w-full
+                        h-full
+                        object-contain
+                        group-hover:scale-105
+                        transition-transform
+                        duration-700
+                      "
                     />
 
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-300" />
 
                   </div>
 
+                  {/* Facility content */}
                   <div className="flex items-center gap-4 p-5">
 
-                    <div className="shrink-0 w-11 h-11 rounded-xl bg-[#1B5FAE] text-white flex items-center justify-center">
+                    <div
+                      className={`
+                        shrink-0
+                        w-11
+                        h-11
+                        rounded-xl
+                        bg-gradient-to-br
+                        ${color.icon}
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        shadow-md
+                        group-hover:scale-105
+                        transition-transform
+                        duration-300
+                      `}
+                    >
                       <Icon size={20} />
                     </div>
 
@@ -736,7 +737,6 @@ const Home = () => {
 
         </div>
       </section>
-
 
       {/* ==================================================
           WHY CHOOSE US
@@ -793,11 +793,29 @@ const Home = () => {
               'Clean drinking water',
               'Student-friendly facilities',
             ].map((text) => (
+
               <motion.div
                 key={text}
                 variants={fadeUp}
-                className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-5 backdrop-blur-sm"
+                whileHover={{
+                  y: -5,
+                  borderColor: 'rgba(253,184,19,0.5)',
+                }}
+                className="
+                  flex
+                  items-start
+                  gap-3
+                  bg-white/5
+                  border
+                  border-white/10
+                  rounded-xl
+                  p-5
+                  backdrop-blur-sm
+                  transition-all
+                  duration-300
+                "
               >
+
                 <CheckCircle2
                   className="text-[#FDB813] shrink-0 mt-0.5"
                   size={21}
@@ -806,6 +824,7 @@ const Home = () => {
                 <span className="text-white/85 text-sm leading-relaxed">
                   {text}
                 </span>
+
               </motion.div>
             ))}
 
@@ -813,7 +832,6 @@ const Home = () => {
 
         </div>
       </section>
-
 
       {/* ==================================================
           CTA
@@ -838,8 +856,14 @@ const Home = () => {
         <div className="relative max-w-4xl mx-auto text-center">
 
           <motion.h2
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{
+              opacity: 0,
+              y: 25,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl font-extrabold text-white"
           >
@@ -847,10 +871,18 @@ const Home = () => {
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+            transition={{
+              delay: 0.1,
+            }}
             className="text-white/85 mt-4 max-w-2xl mx-auto"
           >
             Choose your seat, book online and enjoy a comfortable,
@@ -859,13 +891,37 @@ const Home = () => {
 
           <motion.a
             href="/booking"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2 mt-8 bg-white text-[#1B5FAE] font-bold px-8 py-4 rounded-xl shadow-xl"
+            transition={{
+              delay: 0.2,
+            }}
+            whileHover={{
+              scale: 1.05,
+            }}
+            whileTap={{
+              scale: 0.97,
+            }}
+            className="
+              inline-flex
+              items-center
+              gap-2
+              mt-8
+              bg-white
+              text-[#1B5FAE]
+              font-bold
+              px-8
+              py-4
+              rounded-xl
+              shadow-xl
+            "
           >
             Book Your Seat
             <ArrowRight size={19} />
