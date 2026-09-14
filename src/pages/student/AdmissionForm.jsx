@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as studentService from '../../services/studentService';
 import * as uploadService from '../../services/uploadService';
@@ -43,7 +43,7 @@ const AdmissionForm = () => {
         idProofUrl = await uploadService.uploadFile(idProofFile, 'id_proof');
       }
 
-      setUploadProgress('Submitting admission form...');
+      setUploadProgress('Submitting profile...');
       await studentService.submitAdmissionForm({
         ...form,
         photoUrl,
@@ -55,9 +55,10 @@ const AdmissionForm = () => {
         },
       });
 
-      navigate('/');
+      // No admin review step anymore — go straight into booking a seat.
+      navigate('/book/seat');
     } catch (err) {
-      setError(err.response?.data?.message || 'Could not submit admission form');
+      setError(err.response?.data?.message || 'Could not submit your profile');
     } finally {
       setSubmitting(false);
       setUploadProgress('');
@@ -67,9 +68,9 @@ const AdmissionForm = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-xl font-semibold text-gray-800 mb-1">Admission Form</h1>
+        <h1 className="text-xl font-semibold text-gray-800 mb-1">Complete Your Profile</h1>
         <p className="text-sm text-gray-500 mb-6">
-          Complete this once — an admin will verify it before you can book a seat.
+          One-time setup — once submitted, you can go straight to booking a seat.
         </p>
 
         <form onSubmit={handleSubmit} className="card space-y-5">
@@ -155,7 +156,7 @@ const AdmissionForm = () => {
           </div>
 
           <button type="submit" disabled={submitting} className="btn-primary w-full">
-            {submitting ? uploadProgress || 'Submitting...' : 'Submit Admission Form'}
+            {submitting ? uploadProgress || 'Submitting...' : 'Continue to Book a Seat'}
           </button>
         </form>
       </div>

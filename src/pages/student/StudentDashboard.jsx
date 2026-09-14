@@ -81,12 +81,7 @@ const StudentDashboard = () => {
         </div>
       )}
 
-      {student?.admissionStatus !== 'verified' && (
-        <div className="mb-5 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-sm text-yellow-800">
-          Your admission is <strong>{student?.admissionStatus}</strong>. Booking a seat will be
-          available once an admin verifies your admission.
-        </div>
-      )}
+       
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <ProfileCard student={student} user={user} />
