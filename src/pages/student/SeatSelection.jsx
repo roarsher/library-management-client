@@ -7,12 +7,7 @@ import * as bookingService from '../../services/bookingService';
 import { useBooking } from '../../context/BookingContext';
 import BookingSteps from '../../components/booking/BookingSteps';
 import Loader from '../../components/common/Loader';
-
-const STATUS_STYLE = {
-  available: 'bg-green-100 border-green-300 text-green-700 hover:bg-green-200 cursor-pointer',
-  booked: 'bg-red-100 border-red-300 text-red-400 cursor-not-allowed',
-  disabled: 'bg-gray-100 border-gray-200 text-gray-300 cursor-not-allowed',
-};
+import CinemaSeatMap from '../../components/booking/CinemaSeatMap';
 
 const SeatSelection = () => {
   const navigate = useNavigate();
@@ -74,7 +69,7 @@ const SeatSelection = () => {
       setError('Select a seat to continue');
       return;
     }
-    navigate('/book/add-ons'); // time-slot step is gone — shift already chosen above
+    navigate('/book/add-ons');
   };
 
   return (
@@ -135,29 +130,15 @@ const SeatSelection = () => {
           {loadingSeats ? (
             <Loader label="Loading seats..." />
           ) : (
-            <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2 mb-6">
-              {seats.map((s) => (
-                <button
-                  key={s._id}
-                  disabled={s.status !== 'available' || locking}
-                  onClick={() => handleSelectSeat(s)}
-                  className={`aspect-square rounded-lg border text-xs font-medium transition-colors ${
-                    seat?._id === s._id ? 'bg-brand border-brand text-white' : STATUS_STYLE[s.status]
-                  }`}
-                >
-                  {s.seatNumber}
-                </button>
-              ))}
-            </div>
+            <CinemaSeatMap
+              seats={seats}
+              selectedSeatId={seat?._id}
+              onSelectSeat={handleSelectSeat}
+              disabled={locking}
+            />
           )}
 
-          <div className="flex gap-4 justify-center text-xs text-gray-500 mb-8">
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-green-100 border border-green-300" /> Available</span>
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-red-100 border border-red-300" /> Booked (this shift)</span>
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-brand" /> Selected</span>
-          </div>
-
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-8">
             <button onClick={handleContinue} disabled={!seat} className="btn-primary px-8">
               Continue{seat ? ` with Seat ${seat.seatNumber}` : ''}
             </button>
