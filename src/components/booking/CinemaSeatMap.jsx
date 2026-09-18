@@ -6,81 +6,39 @@ const STATUS_STYLE = {
   disabled: 'bg-gray-100 border-gray-200 text-gray-300 cursor-not-allowed',
 };
 
+// A gap between two seats in the same row is encoded as a skipped column
+// number (e.g. columns 5 then 7, skipping 6) rather than assumed from a
+// 50/50 split — this correctly handles rows with uneven group sizes and
+// rows with no gap at all.
 const CinemaSeatMap = ({ seats, selectedSeatId, onSelectSeat, disabled }) => {
-  // Group seats by tier first, then by row within each tier.
-  // Tier is purely a visual/organizational label here — price comes
-  // entirely from the selected shift (TimeSlot), same for every seat
-  // regardless of tier.
-  const tiers = {};
+  const rows = {};
   seats.forEach((s) => {
-    const tierKey = s.tier || 'General';
-    if (!tiers[tierKey]) tiers[tierKey] = {};
     const rowKey = s.row || '—';
-    if (!tiers[tierKey][rowKey]) tiers[tierKey][rowKey] = [];
-    tiers[tierKey][rowKey].push(s);
+    if (!rows[rowKey]) rows[rowKey] = [];
+    rows[rowKey].push(s);
   });
-
-  // Preserve tier order as seats naturally appear (first-seen order),
-  // rather than alphabetizing tier names.
-  const tierOrder = [];
-  seats.forEach((s) => {
-    const t = s.tier || 'General';
-    if (!tierOrder.includes(t)) tierOrder.push(t);
-  });
+  Object.values(rows).forEach((r) => r.sort((a, b) => (a.column || 0) - (b.column || 0)));
+  const sortedRowKeys = Object.keys(rows).sort();
 
   return (
     <div className="w-full">
-      <div className="space-y-8">
-        {tierOrder.map((tierName) => {
-          const rows = tiers[tierName];
-          const sortedRowKeys = Object.keys(rows).sort();
-          Object.values(rows).forEach((r) => r.sort((a, b) => (a.column || 0) - (b.column || 0)));
+      <div className="space-y-3 overflow-x-auto">
+        {sortedRowKeys.map((rowKey) => {
+          const rowSeats = rows[rowKey];
 
           return (
-            <div key={tierName}>
-              <div className="text-center mb-3">
-                <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                  {tierName}
-                </span>
-              </div>
-
-              <div className="space-y-1.5 overflow-x-auto">
-                {sortedRowKeys.map((rowKey) => {
-                  const rowSeats = rows[rowKey];
-                  const midpoint = Math.ceil(rowSeats.length / 2);
-                  const leftHalf = rowSeats.slice(0, midpoint);
-                  const rightHalf = rowSeats.slice(midpoint);
-
-                  return (
-                    <div key={rowKey} className="flex items-center justify-center gap-2">
-                      <span className="text-xs text-gray-400 w-5 text-right">{rowKey}</span>
-                      <div className="flex gap-1.5">
-                        {leftHalf.map((s) => (
-                          <SeatButton
-                            key={s._id}
-                            seat={s}
-                            selectedSeatId={selectedSeatId}
-                            onSelectSeat={onSelectSeat}
-                            disabled={disabled}
-                          />
-                        ))}
-                      </div>
-                      <div className="w-6" />
-                      <div className="flex gap-1.5">
-                        {rightHalf.map((s) => (
-                          <SeatButton
-                            key={s._id}
-                            seat={s}
-                            selectedSeatId={selectedSeatId}
-                            onSelectSeat={onSelectSeat}
-                            disabled={disabled}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+            <div key={rowKey} className="flex items-center justify-center gap-1">
+              <span className="text-xs text-gray-400 w-5 text-right mr-1">{rowKey}</span>
+              {rowSeats.map((s, i) => {
+                const prev = rowSeats[i - 1];
+                const hasGapBefore = prev && s.column - prev.column > 1;
+                return (
+                  <React.Fragment key={s._id}>
+                    {hasGapBefore && <div className="w-6" />}
+                    <SeatButton seat={s} selectedSeatId={selectedSeatId} onSelectSeat={onSelectSeat} disabled={disabled} />
+                  </React.Fragment>
+                );
+              })}
             </div>
           );
         })}
@@ -90,15 +48,9 @@ const CinemaSeatMap = ({ seats, selectedSeatId, onSelectSeat, disabled }) => {
       <p className="text-center text-xs text-gray-400 tracking-widest uppercase">Front of Room</p>
 
       <div className="flex gap-4 justify-center text-xs text-gray-500 mt-6">
-        <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded bg-green-100 border border-green-300" /> Available
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded bg-red-100 border border-red-300" /> Booked
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded bg-brand" /> Selected
-        </span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-green-100 border border-green-300" /> Available</span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-red-100 border border-red-300" /> Booked</span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-brand" /> Selected</span>
       </div>
     </div>
   );
@@ -110,11 +62,11 @@ const SeatButton = ({ seat, selectedSeatId, onSelectSeat, disabled }) => (
     disabled={disabled || seat.status !== 'available'}
     onClick={() => onSelectSeat(seat)}
     title={`Seat ${seat.seatNumber}`}
-    className={`h-7 w-7 rounded-t-md border text-[10px] font-medium flex items-center justify-center transition-colors ${
+    className={`h-7 w-9 rounded-t-md border text-[9px] font-medium flex items-center justify-center transition-colors ${
       selectedSeatId === seat._id ? 'bg-brand border-brand text-white' : STATUS_STYLE[seat.status]
     }`}
   >
-    {seat.column}
+    {seat.seatNumber}
   </button>
 );
 
