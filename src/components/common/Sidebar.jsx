@@ -18,8 +18,8 @@ const NAV_ITEMS = [
   { to: '/admin/birthdays', label: 'Birthdays', icon: '🎂' },
   { to: '/admin/attendance-today', label: 'Attendance Today', icon: '📝' },
   { to: '/admin/coupons', label: 'Coupons', icon: '🎟️' },
-  
   { to: '/admin/add-ons', label: 'Add-Ons', icon: '➕' },
+  { to: '/admin/student-sheet', label: 'Student Sheet', icon: '📋' },
 ];
 
 const linkClasses = ({ isActive }) =>

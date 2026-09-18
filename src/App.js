@@ -51,6 +51,9 @@ import LibrarySettings from './pages/admin/LibrarySettings';
 import AttendanceTable from './pages/admin/AttendanceTable';
  
 import Birthdays from './pages/admin/Birthdays';
+// App.js
+import StudentSheet from './pages/admin/StudentSheet';
+
  
 
 
@@ -175,6 +178,7 @@ function App() {
                 <Route path="/admin/payment-due" element={adminRoute(<PaymentDue />)} />
                 <Route path="/admin/coupons" element={adminRoute(<ManageCoupons />)} />
                 <Route path="/admin/add-ons" element={adminRoute(<ManageAddOns />)} />
+                <Route path="/admin/student-sheet" element={adminRoute(<StudentSheet />)} />
 
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />
