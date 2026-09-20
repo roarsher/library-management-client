@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+ import React, { useEffect, useState } from 'react';
 import * as studentService from '../../services/studentService';
 import Loader from '../../components/common/Loader';
 import StudentDetailModal from '../../components/admin/StudentDetailModal';
@@ -12,7 +12,7 @@ const StudentSheet = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const { data } = await studentService.listStudents({}); // no status filter — everyone
+      const { data } = await studentService.listStudents({});
       setStudents(data.students);
     } finally {
       setLoading(false);
@@ -21,22 +21,27 @@ const StudentSheet = () => {
 
   useEffect(() => { load(); }, []);
 
-  const filtered = students.filter(
-    (s) =>
-      s.userId?.name?.toLowerCase().includes(search.toLowerCase()) ||
+  const filtered = students.filter((s) => {
+    const q = search.toLowerCase();
+    return (
+      s.userId?.name?.toLowerCase().includes(q) ||
       s.userId?.phone?.includes(search) ||
-      s.userId?.email?.toLowerCase().includes(search.toLowerCase())
-  );
+      s.userId?.email?.toLowerCase().includes(q) ||
+      s.parentDetails?.parentPhone?.includes(search) ||
+      s.parentDetails?.fatherName?.toLowerCase().includes(q) ||
+      s.address?.toLowerCase().includes(q)
+    );
+  });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <h1 className="text-xl font-semibold text-gray-800">Student Sheet</h1>
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search name, phone, or email..."
-          className="input-field w-64"
+          placeholder="Search name, phone, parent, address..."
+          className="input-field w-72"
         />
       </div>
 
@@ -45,27 +50,43 @@ const StudentSheet = () => {
       ) : filtered.length === 0 ? (
         <p className="text-sm text-gray-400">No students found.</p>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+          <table className="w-full text-sm min-w-[1400px]">
             <thead>
               <tr className="text-left text-xs text-gray-400 uppercase tracking-wide border-b border-gray-100">
-                <th className="px-5 py-3">Name</th>
-                <th className="px-5 py-3">Phone</th>
-                <th className="px-5 py-3">Email</th>
-                <th className="px-5 py-3">Gender</th>
-                <th className="px-5 py-3">Joined</th>
-                <th className="px-5 py-3"></th>
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Phone</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">DOB</th>
+                <th className="px-4 py-3">Gender</th>
+                <th className="px-4 py-3">Blood Group</th>
+                <th className="px-4 py-3">Father's Name</th>
+                <th className="px-4 py-3">Mother's Name</th>
+                <th className="px-4 py-3">Parent Phone</th>
+                <th className="px-4 py-3">Address</th>
+                <th className="px-4 py-3">Qualification</th>
+                <th className="px-4 py-3">Preparing For</th>
+                <th className="px-4 py-3">Joined</th>
+                <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((s) => (
                 <tr key={s._id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50">
-                  <td className="px-5 py-3 font-medium text-gray-700">{s.userId?.name}</td>
-                  <td className="px-5 py-3 text-gray-600">{s.userId?.phone}</td>
-                  <td className="px-5 py-3 text-gray-500">{s.userId?.email}</td>
-                  <td className="px-5 py-3 text-gray-500 capitalize">{s.gender}</td>
-                  <td className="px-5 py-3 text-gray-400 text-xs">{new Date(s.createdAt).toLocaleDateString()}</td>
-                  <td className="px-5 py-3 text-right">
+                  <td className="px-4 py-3 font-medium text-gray-700 whitespace-nowrap">{s.userId?.name}</td>
+                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{s.userId?.phone || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.userId?.email || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.dob ? new Date(s.dob).toLocaleDateString() : '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 capitalize">{s.gender || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500">{s.bloodGroup || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.parentDetails?.fatherName || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.parentDetails?.motherName || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.parentDetails?.parentPhone || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 max-w-[200px] truncate" title={s.address}>{s.address || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.qualification || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{s.preparingFor || '—'}</td>
+                  <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">{new Date(s.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
                     <button onClick={() => setSelected(s)} className="text-xs text-brand hover:underline">
                       View / Edit
                     </button>
