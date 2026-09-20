@@ -6,9 +6,10 @@ const developer = {
   name: "Ritesh Kumar",
   role: "Frontend & Backend Developer",
   image: riteshImg,
-  email: "ritesh@example.com",
-  linkedin: "https://linkedin.com/in/ritesh",
-  twitter: "https://twitter.com/ritesh",
+  email: "riteshmanav2003@gmail.com",
+  linkedin: "www.linkedin.com/in/ritesh-3r",
+  twitter: "x.com/RiteshManav1",
+  whatsapp: "919315634530",
 };
 
 const Footer = () => {
