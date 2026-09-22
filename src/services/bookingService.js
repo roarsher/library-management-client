@@ -8,3 +8,4 @@ export const approveBooking = (id) => api.put(`/bookings/${id}/approve`);
 export const rejectBooking = (id, payload) => api.put(`/bookings/${id}/reject`, payload);
 export const adminEditBooking = (id, payload) => api.put(`/bookings/${id}/admin-edit`, payload);
 export const verifyAndApproveBooking = (id) => api.put(`/bookings/${id}/verify-and-approve`);
+export const assignSeatToStudent = (payload) => api.post('/bookings/assign', payload);
