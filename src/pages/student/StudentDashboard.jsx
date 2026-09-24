@@ -17,6 +17,7 @@ import ReferralCard from '../../components/dashboard/student/ReferralCard';
 import StudyTimer from '../../components/timer/StudyTimer';
 import TodoList from '../../components/todo/TodoList';
 import Loader from '../../components/common/Loader';
+import DueWidget from '../../components/dashboard/student/DueWidget';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -96,6 +97,7 @@ const StudentDashboard = () => {
           <TodoList />
         </div>
         <PaymentHistoryWidget payments={payments} />
+        <DueWidget />
         <ReferralCard />
       </div>
     </div>

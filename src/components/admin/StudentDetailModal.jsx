@@ -1331,7 +1331,7 @@ const StudentDetailModal = ({ student, onClose, onSaved }) => {
                 </option>
 
                 <option value="manual_qr">
-                  Manual QR
+                  Online (QR)
                 </option>
               </select>
             </div>

@@ -1473,7 +1473,7 @@ const AddStudent = () => {
                 >
                   <option value="cash">Cash</option>
                   <option value="manual_qr">
-                    Manual QR
+                    Online (QR)
                   </option>
                 </select>
 

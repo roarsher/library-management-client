@@ -68,6 +68,8 @@ const StudentSheet = () => {
                 <th className="px-4 py-3">Photo</th>
                 <th className="px-4 py-3">Aadhaar</th>
 
+                <th className="px-4 py-3">Reg. No.</th>
+                <th className="px-4 py-3">Due</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Phone</th>
                 <th className="px-4 py-3">Email</th>
@@ -127,6 +129,23 @@ const StudentSheet = () => {
                       </span>
                     )}
                   </td>
+                  {/* Registration Number */}
+<td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+  {s.registrationNumber || '—'}
+</td>
+
+{/* Due */}
+<td className="px-4 py-3 whitespace-nowrap">
+  {s.totalDue > 0 ? (
+    <span className="text-red-600 font-medium">
+      ₹{s.totalDue}
+    </span>
+  ) : (
+    <span className="text-green-600 text-xs">
+      Clear
+    </span>
+  )}
+</td>
 
                   {/* Existing columns */}
                   <td className="px-4 py-3 font-medium text-gray-700 whitespace-nowrap">

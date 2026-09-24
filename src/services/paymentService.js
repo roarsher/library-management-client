@@ -15,3 +15,4 @@ export const verifyManualPayment = (id, payload) => api.put(`/payments/${id}/ver
 export const listPaymentsDue = () => api.get('/payments/due');
 export const recordPartialPayment = (payload) => api.post('/payments/record-partial', payload);
 export const clearDue = (id, amountCleared) => api.put(`/payments/${id}/clear-due`, { amountCleared });
+export const getMyDues = () => api.get('/payments/my-due');
