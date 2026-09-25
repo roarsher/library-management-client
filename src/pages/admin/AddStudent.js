@@ -1003,6 +1003,10 @@ const AddStudent = () => {
           address: form.address,
           qualification: form.qualification,
           preparingFor: form.preparingFor,
+          fatherName: form.fatherName,
+          motherName: form.motherName,
+          parentPhone: form.parentPhone,
+        
 
           // Uploaded documents
           photoUrl: form.photoUrl,

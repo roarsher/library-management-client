@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import * as paymentService from '../../services/paymentService';
 import * as uploadService from '../../services/uploadService';
 
-// bookingId and amount are typically passed in via route state or props
-// from the booking-confirmation step of your booking flow.
 const ManualPaymentUpload = ({ bookingId, amount, qrImageUrl, onSubmitted }) => {
   const [screenshotFile, setScreenshotFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [amountPaid, setAmountPaid] = useState(amount);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
@@ -17,10 +16,20 @@ const ManualPaymentUpload = ({ bookingId, amount, qrImageUrl, onSubmitted }) => 
     setPreview(file ? URL.createObjectURL(file) : null);
   };
 
+  const dueIfSubmitted = Math.max(amount - Number(amountPaid || 0), 0);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!screenshotFile) {
       setError('Please attach a screenshot of your payment');
+      return;
+    }
+    if (!amountPaid || Number(amountPaid) <= 0) {
+      setError('Enter the amount you actually paid');
+      return;
+    }
+    if (Number(amountPaid) > amount) {
+      setError('Amount paid cannot exceed the total due');
       return;
     }
     setError('');
@@ -28,7 +37,11 @@ const ManualPaymentUpload = ({ bookingId, amount, qrImageUrl, onSubmitted }) => 
 
     try {
       const screenshotUrl = await uploadService.uploadFile(screenshotFile, 'payment_screenshot');
-      await paymentService.submitManualPayment({ bookingId, amount, screenshotUrl });
+      await paymentService.submitManualPayment({
+        bookingId,
+        amount: Number(amountPaid),
+        screenshotUrl,
+      });
       setDone(true);
       onSubmitted?.();
     } catch (err) {
@@ -56,9 +69,26 @@ const ManualPaymentUpload = ({ bookingId, amount, qrImageUrl, onSubmitted }) => 
       {qrImageUrl && (
         <img src={qrImageUrl} alt="Payment QR" className="w-48 h-48 mx-auto rounded-lg border border-gray-100" />
       )}
-      <p className="text-center text-sm text-gray-500">Amount: ₹{amount}</p>
+      <p className="text-center text-sm text-gray-500">Total due: ₹{amount}</p>
 
       {error && <p className="text-sm text-red-500">{error}</p>}
+
+      <div>
+        <label className="text-sm text-gray-600 mb-1 block">Amount you paid</label>
+        <input
+          type="number"
+          value={amountPaid}
+          onChange={(e) => setAmountPaid(e.target.value)}
+          max={amount}
+          min={1}
+          className="input-field"
+        />
+        {dueIfSubmitted > 0 && (
+          <p className="text-xs text-amber-600 mt-1">
+            ⚠ ₹{dueIfSubmitted} will be recorded as due — visible to you and the library admin until cleared.
+          </p>
+        )}
+      </div>
 
       <div>
         <label className="text-sm text-gray-600 mb-1 block">Upload payment screenshot</label>
