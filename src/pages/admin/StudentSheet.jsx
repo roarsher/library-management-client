@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import * as studentService from '../../services/studentService';
 import Loader from '../../components/common/Loader';
 import StudentDetailModal from '../../components/admin/StudentDetailModal';
+import * as paymentService from '../../services/paymentService';
 
 const StudentSheet = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
+  const [clearingId, setClearingId] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -36,6 +38,17 @@ const StudentSheet = () => {
       s.address?.toLowerCase().includes(q)
     );
   });
+
+  const handleMarkPaid = async (studentDue) => {
+  if (!window.confirm(`Mark ₹${studentDue.totalDue} as paid for this student?`)) return;
+  setClearingId(studentDue._id);
+  try {
+    await paymentService.clearDue(studentDue.duePaymentId, studentDue.totalDue);
+    await load();
+  } finally {
+    setClearingId(null);
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -135,15 +148,20 @@ const StudentSheet = () => {
 </td>
 
 {/* Due */}
-<td className="px-4 py-3 whitespace-nowrap">
+ <td className="px-4 py-3 whitespace-nowrap">
   {s.totalDue > 0 ? (
-    <span className="text-red-600 font-medium">
-      ₹{s.totalDue}
-    </span>
+    <div className="flex items-center gap-2">
+      <span className="text-red-600 font-medium">₹{s.totalDue}</span>
+      <button
+        onClick={() => handleMarkPaid(s)}
+        disabled={clearingId === s._id}
+        className="text-xs text-green-600 hover:underline disabled:opacity-50"
+      >
+        {clearingId === s._id ? '...' : 'Mark Paid'}
+      </button>
+    </div>
   ) : (
-    <span className="text-green-600 text-xs">
-      Clear
-    </span>
+    <span className="text-green-600 text-xs">Clear</span>
   )}
 </td>
 
