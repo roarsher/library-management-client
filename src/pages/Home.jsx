@@ -1,6 +1,6 @@
  import React from 'react';
 import { motion } from 'framer-motion';
-
+import { LIBRARY_NAME } from '../constants/library';
 import {
   Wifi,
   Camera,
@@ -387,7 +387,7 @@ const Home = () => {
             transition={{ duration: 0.7 }}
             className="text-4xl sm:text-6xl font-extrabold text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)] mb-4"
           >
-            {libraryName}
+            {LIBRARY_NAME}
           </motion.h1>
 
           <motion.p
