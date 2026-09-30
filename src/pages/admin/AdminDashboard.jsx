@@ -38,12 +38,12 @@ const StatCard = ({ label, value, sub, highlight, linkTo }) => {
     : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-[144px] pb-6">
+     <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 py-6">
       <h1 className="text-xl font-semibold text-gray-800 mb-5">
         Admin Dashboard
       </h1>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard
           label="Seat Occupancy"
           value={`${occupancyRate}%`}

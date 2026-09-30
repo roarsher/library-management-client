@@ -78,29 +78,57 @@ import StudentSheet from './pages/admin/StudentSheet';
 //   return children;
 // };
 
-const PublicLayout = ({ children }) => (
-  <div className="min-h-screen bg-gray-50 flex flex-col pt-16">
-    <Navbar />
-    <div className="flex-1">{children}</div>
-    <Footer />
-  </div>
-);
+ const PublicLayout = ({ children }) => {
+  const { user } = useAuth();
 
-const StudentLayout = ({ children }) => (
-  <div className="min-h-screen bg-gray-50 flex flex-col pt-[7.5rem]">
+  const hasDesktopQuickLinks =
+    user?.role === 'student' ||
+    user?.role === 'admin' ||
+    user?.role === 'superadmin';
+
+  return (
+    <div
+      className={`min-h-screen bg-gray-50 flex flex-col ${
+        hasDesktopQuickLinks
+          ? 'pt-16 md:pt-[7.5rem]'
+          : 'pt-16'
+      }`}
+    >
+      <Navbar />
+
+      <div className="flex-1">
+        {children}
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+ const StudentLayout = ({ children }) => (
+  <div className="min-h-screen bg-gray-50 flex flex-col pt-16 md:pt-[7.5rem]">
     <Navbar />
-    <div className="flex-1">{children}</div>
+
+    <div className="flex-1">
+      {children}
+    </div>
+
     <Footer />
   </div>
 );
 
 const AdminLayout = ({ children }) => (
-  <div className="min-h-screen bg-gray-50 flex flex-col pt-16">
+  <div className="min-h-screen bg-gray-50 flex flex-col pt-16 md:pt-[7.5rem]">
     <Navbar />
-    <div className="flex flex-1">
+
+    <div className="flex flex-1 min-w-0">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1">{children}</div>
+
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex-1 min-w-0">
+          {children}
+        </div>
+
         <Footer />
       </div>
     </div>
